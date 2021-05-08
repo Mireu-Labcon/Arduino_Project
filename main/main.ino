@@ -23,7 +23,7 @@ float R0;
 float RS_air;
 float ratio;
 
-void setup(){
+void setup() {
   Serial.begin(9600);
   mySerial.begin(9600);
 
@@ -45,7 +45,7 @@ int gas;
 bool fire;
 bool gas_full;
 
-void loop(){
+void loop() {
 
   //-----외부 온도 측정-----
   ot = dht1.readTemperature();
@@ -80,7 +80,7 @@ void loop(){
   Serial.println(dustDensity);
 
   //가스 센서 측정
-  for (int i = 0; i < 10000; i++){
+  for (int i = 0; i < 10000; i++) {
     sensor_volt1 = sensor_volt + analogRead(A0);
   }
   sensor_volt1 = sensor_volt1 / 100.0;
@@ -107,80 +107,78 @@ void loop(){
   Serial.print("외.내부 습기값 오차 : ");
   Serial.println(ah);
 
-  mySerial.print("============================\n");
   //온도 평균
   Serial.print("온도 상황: ");
-  mySerial.print("온도 상황: ");
-  if (at >= -10){
+  if (at >= -10) {
     Serial.println("온도 매우 낮음");
-    mySerial.print("온도 매우 낮음 \n");
+    mySerial.write("Ha");
   }
-  else if (at >= 10){
+  else if (at >= 10) {
     Serial.println("온도 매우 높음");
-    mySerial.print("온도 매우 높음 \n");
-  }else if (at <= 5){
+    mySerial.write("Hb");
+  } else if (at <= 5) {
     Serial.println("온도 정상");
-    mySerial.print("온도 정상 \n");
+    mySerial.write("Hc");
   }
-
+  delay(100);
+  
   //불꽃 감지
   Serial.print("불꽃 감지 상황: ");
-  mySerial.print("불꽃 감지 상황: ");
-  if (Flame == HIGH){
+  if (Flame == HIGH) {
     Serial.println("불꽃 감지");
-    mySerial.print("불꽃 감지 \n");
+    mySerial.write("Fa");
     fire = true;
-  }else{
+  } else {
     Serial.println("불꽃 감지 안됨");
-    mySerial.print("불꽃 감지 안됨 \n");
+    mySerial.write("Fb");
     fire = false;
   }
+  delay(100);
   
-//미세먼지 농도
+  //미세먼지 농도
   Serial.print("미세먼지 상황 : ");
-  mySerial.print("미세먼지 상황 : ");
-  if (dustDensity <= 50){
+  if (dustDensity <= 50) {
     Serial.println("좋음");
-    mySerial.print("좋음 \n");
-  }else if (dustDensity <= 80){
+    mySerial.write("Da");
+  } else if (dustDensity <= 80) {
     Serial.println("보통");
-    mySerial.print("보통 \n");
-  }else if (dustDensity <= 150){
+    mySerial.write("Db");
+  } else if (dustDensity <= 150) {
     Serial.println("나쁨");
-    mySerial.print("나쁨 \n");
-  }else if (dustDensity > 150){
+    mySerial.write("Dc");
+  } else if (dustDensity > 150) {
     Serial.println("매우 나쁨");
-    mySerial.print("매우 나쁨 \n");
+    mySerial.write("Dd");
   }
   Serial.print("Dust Density = ");
   Serial.print(dustDensity);
   Serial.println(" [ug/m^3]");
+  delay(100);
 
-// 가스 누출
+  // 가스 누출
   Serial.print("가스 누출 상태 : ");
-  mySerial.print("가스 누출 상태 : ");
-  if (R0 >= 40){
+  if (R0 >= 40) {
     Serial.println("가스 확인");
-    mySerial.print("가스 확인 \n");
+    mySerial.print("Ga");
     gas_full = true;
-  }else if (R0 <= 41){
+  } else if (R0 <= 41) {
     Serial.println("가스 미노출");
-    mySerial.print("가스 미노출 \n");
+    mySerial.print("Gb");
     gas_full = false;
   }
   Serial.println(R0);
+  delay(100);
 
   Serial.print("가스노출 : ");
   Serial.println(gas_full);
   Serial.print("불꽃감지");
   Serial.println(fire);
-  Serial.print("결론 : ")
-  if (gas_full == true && fire == true){
+  Serial.print("결론 : ");
+  if (gas_full == true && fire == true) {
     Serial.println("화제 발생");
-  }else if(gas_full == false && fire == false){
+  } else if (gas_full == false && fire == false) {
     Serial.println("고요한 집임");
   }
 
-
-  delay(500);
+delay(200);
 }
